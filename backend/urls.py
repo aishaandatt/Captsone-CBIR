@@ -20,5 +20,6 @@ from api import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('cbir', csrf_exempt(views.cbir), name="CBIR")
+    path('cbir', csrf_exempt(views.cbir), name="CBIR"),
+    # path('mongo', csrf_exempt(views.mongo), name="Mongo")
 ]

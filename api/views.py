@@ -9,9 +9,15 @@ import urllib.request
 from PIL import Image
 from keras.applications.vgg16 import VGG16
 from keras.applications.vgg16 import preprocess_input
+import pymongo
+import os
+import datetime
 from sklearn.metrics.pairwise import cosine_similarity
 # Create your views here.
-
+myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+mydb = myclient["capstone"]
+mycol = mydb["CBIR"]
+workdir = '/Users/aishaandatt/Downloads/CBIR/Brain_DS'
 model = VGG16(include_top=False, weights='imagenet')
 features = np.load('/Users/aishaandatt/Downloads/CBIR/extract.npy')
 
@@ -40,7 +46,6 @@ def cbir(request):
         images.append(img)
         paths.append(filename)
     images = np.array(images)
-    distances = cosine_similarity(features)
     url = json.loads(request.body)['body']
     print(url)
     url_response = urllib.request.urlopen(url)
@@ -55,8 +60,23 @@ def cbir(request):
     query_distances = cosine_similarity(query_features, features)
     sorted_indices = np.argsort(query_distances.flatten())[::-1]
     for i in range(9):
-        print(paths[sorted_indices[i]])
+        # print(paths[sorted_indices[i]])
         paths_new.append(paths[sorted_indices[i]])
         scores.append(str(query_distances[0, sorted_indices[i]]))
         print(query_distances[0, sorted_indices[i]])
-    return JsonResponse({'img': paths_new, 'score': scores})
+    mdb = {'img': paths_new}
+    json_object = json.dumps(mdb)
+    mongodb = (mongo(json_object))['info']
+    print(mongodb)
+    return JsonResponse({'db': mongodb, 'score': scores})
+
+
+def mongo(request):
+    db = []
+    paths = json.loads(request)['img']
+    # print(paths)
+    for path in paths:
+        for x in mycol.find({"path": path}, {"path": 1, '_id': 0, 'age': 1, 'feedback': 1}):
+            db.append(x)
+            # print(x)
+    return ({'info': db})
