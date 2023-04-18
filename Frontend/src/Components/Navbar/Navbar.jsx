@@ -20,7 +20,7 @@ import Login from '../Login/Login'
 import Signup from '../Signup/Signup'
 import { useState } from 'react';
 import { fetchUserName } from '../../store/user-actions';
-import { loginFunc, logoutFunc, signupFunc, tokenFunc } from '../../store/auth-actions';
+import { isAdminFunc, loginFunc, logoutFunc, signupFunc, tokenFunc } from '../../store/auth-actions';
 import { Modal } from '@mui/material';
 const Navbar = (props) => {
     const data = useSelector((state) => state.auth.data)
@@ -53,37 +53,28 @@ const Navbar = (props) => {
         e.preventDefault()
         dispatch(signupFunc(userData))
     }
-    const [anchorElNav, setAnchorElNav] = useState(null);
+
     const dispatch = useDispatch()
-    const [anchorElUser, setAnchorElUser] = useState(null);
     const navigate = useNavigate()
     const token = useSelector((state) => state.auth.token)
-    const [flag, setFlag] = useState(1);
-    const fireLogout = () => {
-        props.onFireLogout(true)
-    };
     const goToAdmin = () => {
         navigate('/admin')
     }
-    const goToProfile = () => {
-        navigate('/profile')
-    }
-    const goToMain = () => {
-        navigate('/')
-    }
     useEffect(() => {
         dispatch(tokenFunc())
+        dispatch(isAdminFunc())
+        console.log(isAdm)
     })
-    useEffect(() => {
-        if (token) {
-            dispatch(fetchUserName())
+    // useEffect(() => {
+    //     if (token) {
+    //         dispatch(fetchUserName())
 
-        }
-    }, [])
+    //     }
+    // }, [])
     const handleLogout = async () => {
         dispatch(logoutFunc())
         navigate('/')
-        setFlag(true)
+
     }
     const goToEdit = async () => {
         navigate('/edit')
@@ -94,6 +85,7 @@ const Navbar = (props) => {
     const handleClose = () => setOpen(false);
     return (
         <>
+
             <div style={{ alignContent: 'center' }}>
                 <Box sx={{ flexGrow: 1 }}>
                     <AppBar position="static" style={{ background: 'transparent', boxShadow: 'none' }}>

@@ -19,6 +19,7 @@ const authSlice = createSlice({
             state.error = false
             state.loggedIn = true
             state.token = true
+            state.data = action.payload
             // state.data = action.payload
         },
         error(state, action) {

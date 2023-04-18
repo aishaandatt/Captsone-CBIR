@@ -6,7 +6,7 @@ export const loginFunc = (userData) => async dispatch => {
         const response = await api.post('/auth/login', userData)
         console.log(response)
         if (response.status === 200) {
-            dispatch(authActions.login())
+            dispatch(authActions.login(response.data.user))
             localStorage.setItem('token', response.data.token)
             localStorage.setItem('userInfo', JSON.stringify(response.data.user))
         }
@@ -57,7 +57,8 @@ export const tokenFunc = () => async dispatch => {
 export const isAdminFunc = () => async dispatch => {
     try {
         const isAdmin = JSON.parse(localStorage.getItem('userInfo'))
-        console.log(isAdmin.isAdmin)
+
+        console.log("hi", isAdmin.isAdmin)
         if (isAdmin.isAdmin) {
             dispatch(authActions.adminFind())
         }

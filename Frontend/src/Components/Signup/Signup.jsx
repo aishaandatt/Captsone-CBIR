@@ -1,7 +1,16 @@
 import '../Login/Login.scss'
 import './ButtonAppBar.css'
+import { useSelector } from 'react-redux'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 const Signup = ({ handleInputChange, handleSubmit }) => {
-
+    const navigate = useNavigate()
+    const token = useSelector((state) => state.auth.token)
+    useEffect(() => {
+        if (token) {
+            navigate('/upload')
+        }
+    })
     return (
         <form className='form' onSubmit={handleSubmit}>
             <div className="fields">

@@ -8,7 +8,7 @@ export const fetchUserName = () => async dispatch => {
     await api.get('/api/user', { headers: { Authorization: `Bearer ${token}` } })
         .then(respone => {
             console.log(respone.data)
-            dispatch(authActions.fetchUser(respone.data))
+            // dispatch(authActions.fetchUser(respone.data))
             if (respone.data.isAdmin === true) {
                 dispatch(authActions.adminFind())
             }
