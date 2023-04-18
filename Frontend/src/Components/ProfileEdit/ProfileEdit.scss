@@ -1,0 +1,21 @@
+.update {
+  form {
+    display: flex;
+    width: 25vw;
+    font-size: 1rem;
+    flex-direction: column;
+    input {
+      font-size: 1.3rem;
+    }
+    button {
+      justify-content: center;
+      align-items: center;
+      width: 50%;
+    }
+    div {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 4vh;
+    }
+  }
+}

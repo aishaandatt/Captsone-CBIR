@@ -1,0 +1,46 @@
+$grey: #cbcbcb;
+.form {
+  // width: 50vw;
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  .fields {
+    width: 25vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; // to vertically change pos
+    // align-content: flex-start;
+    .inputField {
+      margin-top: 3vh;
+      width: 100%;
+      border-top: 0;
+      border-left: 0;
+      border-right: 0;
+      border-bottom: 1px solid teal;
+      font-size: 1.4rem;
+    }
+    .inputField:focus {
+      border-top: 0;
+      border-left: 0;
+      border-right: 0;
+      border-bottom: 1px solid teal;
+      outline: none;
+    }
+    .btn {
+      cursor: pointer;
+      margin-top: 5vh;
+      border-radius: 5px;
+      border: 1px solid $grey;
+      background-color: white;
+      padding-left: 2vmin;
+      padding-right: 2vmin;
+      padding-top: 1vmin;
+      padding-bottom: 1vmin;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 1.5rem;
+    }
+  }
+}
