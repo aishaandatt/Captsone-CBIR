@@ -6,7 +6,7 @@ export const loginFunc = (userData) => async dispatch => {
         const response = await api.post('/auth/login', userData)
         console.log(response)
         if (response.status === 200) {
-            dispatch(authActions.login(response.data.user))
+            dispatch(authActions.login())
             localStorage.setItem('token', response.data.token)
             localStorage.setItem('userInfo', JSON.stringify(response.data.user))
         }

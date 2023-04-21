@@ -22,7 +22,7 @@ app.use('/admin', adminRoutes)
 app.use(handleError);
 
 // Connect to MongoDB
-// app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         console.log('Connected to MongoDB');
@@ -33,53 +33,53 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
 
 
 // Set storage engine
-// const storage = multer.diskStorage({
-//     destination: './public/uploads/',
-//     filename: function (req, file, cb) {
-//         cb(null, file.originalname);
-//     }
-// });
+const storage = multer.diskStorage({
+    destination: './public/uploads/',
+    filename: function (req, file, cb) {
+        cb(null, file.originalname);
+    }
+});
 
 // Init upload
-// const upload = multer({
-//     storage: storage,
-//     limits: { fileSize: 1000000 }
-// }).single('myImage');
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 1000000 }
+}).single('myImage');
 
 // Set static folder
 
-// app.post('/upload', (req, res) => {
-//     res.setHeader('Access-Control-Allow-Origin', '*');
-//     res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
-//     res.setHeader('Access-Control-Max-Age', 60 * 60 * 24 * 30);
-//     upload(req, res, err => {
-//         if (err) {
-//             console.log(err);
-//         } else {
-//             console.log(req.file);
-//             res.send(req.file);
-//         }
-//     });
-// });
-// app.get('/uploads/:filename', (req, res) => {
-//     const filename = req.params.filename;
-//     const filePath = path.join(__dirname, 'uploads', filename);
-//     res.sendFile(filePath);
-// });
-// app.delete('/uploads/:filename', (req, res) => {
-//     const filename = req.params.filename;
-//     const filePath = path.join(__dirname, 'public/uploads', filename);
+app.post('/upload', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
+    res.setHeader('Access-Control-Max-Age', 60 * 60 * 24 * 30);
+    upload(req, res, err => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(req.file);
+            res.send(req.file);
+        }
+    });
+});
+app.get('/uploads/:filename', (req, res) => {
+    const filename = req.params.filename;
+    const filePath = path.join(__dirname, 'uploads', filename);
+    res.sendFile(filePath);
+});
+app.delete('/uploads/:filename', (req, res) => {
+    const filename = req.params.filename;
+    const filePath = path.join(__dirname, 'public/uploads', filename);
 
-//     fs.unlink(filePath, (err) => {
-//         if (err) {
-//             console.error(err);
-//             res.status(500).send('Error deleting file');
-//         } else {
-//             console.log(`File ${filename} has been deleted`);
-//             res.status(200).send('File deleted successfully');
-//         }
-//     });
-// });
+    fs.unlink(filePath, (err) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Error deleting file');
+        } else {
+            console.log(`File ${filename} has been deleted`);
+            res.status(200).send('File deleted successfully');
+        }
+    });
+});
 // Start the server
 app.listen(4000, () => {
     console.log('Server started on port 4000');

@@ -7,7 +7,8 @@ const { jwtSecret } = require('../config');
 const getUserByName = async (req, res) => {
     try {
         // Find the authenticated user
-        const user = await User.findOne({ email: req.user.email });
+
+        const user = await User.findOne({ email: req.body });
         console.log(req.user.id)
         console.log(user)
         if (!user) {

@@ -2,20 +2,12 @@ import React, { useEffect } from 'react'
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import logo from '../../assets/DALL.png'
 import './Navbar.scss'
-import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
-import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux";
-import PersonIcon from '@mui/icons-material/Person';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import Login from '../Login/Login'
 import Signup from '../Signup/Signup'
 import { useState } from 'react';
@@ -23,6 +15,7 @@ import { fetchUserName } from '../../store/user-actions';
 import { isAdminFunc, loginFunc, logoutFunc, signupFunc, tokenFunc } from '../../store/auth-actions';
 import { Modal } from '@mui/material';
 const Navbar = (props) => {
+    const nameFromStorage = JSON.parse(localStorage.getItem('userInfo'))
     const data = useSelector((state) => state.auth.data)
     const style = {
         position: 'absolute',
@@ -63,8 +56,11 @@ const Navbar = (props) => {
     useEffect(() => {
         dispatch(tokenFunc())
         dispatch(isAdminFunc())
-        console.log(isAdm)
-    })
+        if (nameFromStorage) {
+            dispatch(fetchUserName(nameFromStorage.email))
+        }
+        // console.log(isAdm)
+    }, [])
     // useEffect(() => {
     //     if (token) {
     //         dispatch(fetchUserName())
@@ -78,6 +74,10 @@ const Navbar = (props) => {
     }
     const goToEdit = async () => {
         navigate('/edit')
+    }
+    const goToUpload = async () => {
+        navigate('/upload')
+        window.location.reload(true)
     }
     //MODAL
     const [open, setOpen] = React.useState(false);
@@ -104,9 +104,10 @@ const Navbar = (props) => {
                                 Welcome {data ? data.name : ''}
                             </Typography>
 
-                            {token ? <button className="button button1" onClick={handleLogout}>Logout</button> : <button onClick={handleOpen} className="button button1">Log In</button>}
+                            {token ? <button className='button button1' onClick={goToUpload}>Upload</button> : ""}
                             {isAdm ? <button class="button button1" onClick={goToAdmin}>Admin</button> : ""}
                             {token ? <button className='button button1' onClick={goToEdit}>Edit</button> : ''}
+                            {token ? <button className="button button1" onClick={handleLogout}>Logout</button> : <button onClick={handleOpen} className="button button1">Log In</button>}
                         </Toolbar>
                     </AppBar>
                 </Box>

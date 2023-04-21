@@ -5,40 +5,30 @@ import axios from 'axios';
 import React from 'react'
 import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
-import { CardActionArea } from '@mui/material';
+import { Box, CardActionArea, LinearProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../Navbar/Navbar'
 import image from '../../assets/upload.svg'
 import './UploadPage.scss'
 
-
-
-// $(function() {
-//   $("table").resizableColumns({
-//     store: window.store
-//   });
-// });
-
-
-
 const UploadPage = (props) => {
     const [flag, setFlag] = useState(true)
     const navigate = useNavigate()
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        props.onLogout(true)
-        navigate("/");
-    };
-
+    // const [loading,setLoading] = useState(true)
+    const [userData, setUserData] = useState(null)
+    const handleInputChange = (e) => {
+        setUserData({
+            ...userData,
+            [e.target.name]: e.target.value
+        })
+    }
     const [file, setFile] = useState('');
     const [imgUrl, setImgUrl] = useState('')
     const [data, setData] = useState([])
     let object = ''
-
     const onChange = e => {
         setFile(e.target.files[0]);
     };
-
     const onSubmit = async e => {
         e.preventDefault();
         let res = ''
@@ -50,30 +40,12 @@ const UploadPage = (props) => {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            // res.setHeader('Access-Control-Allow-Origin', '*');
-            // res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
-            // res.setHeader('Access-Control-Max-Age', 60 * 60 * 24 * 30);
             console.log(res);
             object = res.data?.filename
             setImgUrl(`http://localhost:4000/uploads/${res.data.filename}`)
-            // fetch(`http://localhost:8080/uploads/${res.data.filename}`)
-            //  fetch('http://localhost:8080/uploads/image.png')
-            // .then(response => response.json())
-            // .then(image => setImage(image));
-            // console.log(image)
         } catch (err) {
             console.log(err);
         }
-
-        //   try {
-        //   fetch('http://localhost:8080/uploads/image.png')
-        //     .then(response => response.json())
-        //     .then(image => setImage(image));
-        //     console.log(image)
-        // }
-        // catch (err) {
-        //   console.log(err);
-        // }
 
     }
     useEffect(() => {
@@ -90,64 +62,36 @@ const UploadPage = (props) => {
         }
     }, [imgUrl]);
     console.log(JSON.stringify(data.db))
-
-
-    const [user, setUser] = useState(null);
-    const [error, setError] = useState('');
-
+    const formatDate = (dateStr) => {
+        const date = new Date(dateStr);
+        const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+        return formattedDate;
+    };
     const dispImage = imgUrl ?
         <img src={imgUrl}
             height='200px'
             width='220px'
             alt=''
         />
-
         : <></>
     const display = data.db?.map((item) => (
-
-        // <Grid style={{ padding: '20px', marginLeft: '20px' }} item xs={2} sm={2} md={3} key={item}>
-        //   <div className='flip-card'>
-        //     <div className='flip-card-inner'>
-        //       <div className='flip-card-front'>
-        //         <img src={item.path}
-        //           height='200px'
-        //           width='300px'
-        //           alt=''>
-        //         </img>
-        //       </div>
-        //       <div className='flip-card-back'>
-        //         <h3 style={{ margin: '40px' }}> Score = {item.score}</h3>
-        //         <h4>Age = {item.age}</h4>
-        //         <h6>Feedback= {item.feedback}</h6>
-
-        //       </div>
-        //     </div>
-        //   </div>
-        // </Grid>
-
         <tr>
             <td><img src={item.path}
                 height='100px'
                 width='120px'
                 alt=''>
             </img></td>
-            <td>{item.path.slice(27)}</td>
+            {/* <td>{item.path.slice(27)}</td> */}
+            <td>{item.name}</td>
             <td>{item.age}</td>
+            <td>{formatDate(item.date)}</td>
             <td>{item.feedback}</td>
             <td>{item.score}</td>
         </tr>
-
-
-    )
-
-    )
-
-
+    ))
     return (
         <div>
-
             <Navbar />
-
             <div className="box">
                 {(flag == true) ?
                     <div className="upload">
@@ -156,6 +100,8 @@ const UploadPage = (props) => {
                             <form onSubmit={onSubmit}>
                                 <div className="btn">
                                     <input type='file' name='myImage' onChange={onChange} />
+                                    <input type='text' name='name' onChange={handleInputChange} placeholder="Name" />
+                                    <input type='text' name='age' onChange={handleInputChange} placeholder="Age" />
                                     <input type='submit' value='Upload' />
                                 </div>
                             </form>
@@ -189,18 +135,30 @@ const UploadPage = (props) => {
 
             <div className="box">
                 {(flag == false) ?
-                    <table class="table" data-resizable-columns-id="demo-table-v2">
+                    <table className="table" data-resizable-columns-id="demo-table-v2">
                         <thead>
                             <tr>
                                 <th data-resizable-column-id="nr">Result</th>
                                 <th data-resizable-column-id="first_name">Patient Name</th>
                                 <th data-resizable-column-id="nickname">Age</th>
+                                <th data-resizable-column-id="date">Date</th>
                                 <th data-resizable-column-id="last_name">Information</th>
-                                <th data-resizable-column-id="username" id="username-column">Date</th>
+                                <th data-resizable-column-id="username" id="username-column">Score</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {display}
+                            {display
+                                ?
+                                display
+                                :
+                                <tr>
+                                    <td colspan='6'>
+                                        <Box sx={{ width: '100%' }}>
+                                            <LinearProgress />
+                                        </Box>
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                     :
